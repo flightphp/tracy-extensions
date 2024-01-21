@@ -14,7 +14,7 @@ This is the Panel
 
 And each panel displays very helpful information about your application!
 
-![Flight Data](flight-data.png)
+![Flight Data](flight-var-data.png)
 ![Flight Database](flight-db.png)
 ![Flight Request](flight-request.png)
 
