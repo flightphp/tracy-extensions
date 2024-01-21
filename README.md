@@ -14,7 +14,9 @@ This is the Panel
 
 And each panel displays very helpful information about your application!
 
-![Flight Bar](flight-data.png)
+![Flight Data](flight-data.png)
+![Flight Database](flight-db.png)
+![Flight Request](flight-request.png)
 
 Installation
 -------
