@@ -13,6 +13,7 @@
 		"classmap": [ "src/" ]
 	},
     "require": {
+		"php": ">=7.4",
         "tracy/tracy": "^2.9",
         "flightphp/core": "^3.0"
     }
