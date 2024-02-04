@@ -28,10 +28,10 @@ class PdoQueryCaptureStatement extends PDOStatement {
 	 * @param array|null $input_parameters input parameters
 	 * @return bool
 	 */
-	public function execute($input_parameters = null)
+	public function execute(array|null $params = null): bool
 	{
 		$start_time = microtime(true);
-		$result = parent::execute($input_parameters);
+		$result = parent::execute($params);
 		$end_time = microtime(true);
 		$execution_time = $end_time - $start_time;
 		$input_parameters = $input_parameters ?? (PdoQueryCapture::$query_data[$this->unique_value]['params'] ?? []);

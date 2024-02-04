@@ -5,6 +5,7 @@ namespace flight\debug\tracy;
 
 use Exception;
 use Flight;
+use flight\debug\database\PdoQueryCapture;
 use flight\Engine;
 use Throwable;
 use Tracy\Debugger;
@@ -28,7 +29,9 @@ class TracyExtensionLoader {
 
 	protected function loadExtensions(Engine $app): void {
 		Debugger::getBar()->addPanel(new FlightPanelExtension($app));
-		Debugger::getBar()->addPanel(new DatabaseExtension);
+		if(isset(PdoQueryCapture::$query_data)) {
+			Debugger::getBar()->addPanel(new DatabaseExtension);
+		}
 
 		// if there's no session data, then don't show the panel
 		if(session_status() === PHP_SESSION_ACTIVE) {

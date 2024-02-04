@@ -36,14 +36,10 @@ class PdoQueryCapture extends PDO {
 	 * @param array  $ctorargs   Arguments of custom class constructor when the mode parameter is set to PDO::FETCH_CLASS
 	 * @return void
 	 */
-	public function query($query, $fetchMode = PDO::FETCH_ASSOC, $arg3 = null, $ctorargs = [])
+	public function query(string $query, int|null $fetchMode = null, mixed ...$fetch_mode_args): PDOStatement|false
 	{
 		$start_time = microtime(true);
-		if($arg3 === null) {
-			$result = parent::query($query, $fetchMode);
-		} else {
-			$result = parent::query($query, $fetchMode, $arg3, $ctorargs);
-		}
+			$result = parent::query($query, $fetchMode, $fetch_mode_args);
 		$end_time = microtime(true);
 		$execution_time = $end_time - $start_time;
 		self::$query_data[uniqid("", true)] = [
@@ -59,7 +55,7 @@ class PdoQueryCapture extends PDO {
 	 * @param string $statement SQL Statement to run
 	 * @return PdoQueryCaptureStatement|false
 	 */
-	public function exec($statement)
+	public function exec(string $statement): int|false
 	{
 		$start_time = microtime(true);
 		$result = parent::exec($statement);
@@ -79,7 +75,7 @@ class PdoQueryCapture extends PDO {
 	 * @param array  $options This array holds one or more key=>value pairs to set attribute values for the PDOStatement object that this method returns. You would most commonly use this to set the PDO::ATTR_CURSOR value to PDO::CURSOR_SCROLL to request a scrollable cursor. Some drivers have driver specific options that may be set at prepare-time.
 	 * @return PdoQueryCaptureStatement|false
 	 */
-	public function prepare($query, $options = [])
+	public function prepare($query, $options = []): PdoQueryCaptureStatement|false
 	{
 		$start_time = microtime(true);
 		$statement = parent::prepare($query, $options);
