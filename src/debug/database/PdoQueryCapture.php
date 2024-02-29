@@ -6,7 +6,7 @@ namespace flight\debug\database;
 use PDO;
 use PDOStatement;
 
-class PdoQueryCapture extends PDO {
+class PdoQueryCapture extends \flight\database\PdoWrapper {
 
 	/** @var array $query_data */
 	public static array $query_data = [];
