@@ -18,7 +18,7 @@ class PdoQueryCaptureStatement extends PDOStatement {
 	 */
 	protected function __construct(PDO $pdo)
 	{
-		$this->PDO = $pdo;
+		//$this->PDO = $pdo;
 		$this->unique_value = uniqid("", true);
 	}
 
