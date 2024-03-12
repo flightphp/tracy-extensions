@@ -12,7 +12,15 @@ use Tracy\Debugger;
 
 class TracyExtensionLoader {
 
-	public function __construct(Engine $app = null) {
+	protected array $config;
+
+	/**
+	 * Construct
+	 *
+	 * @param Engine|null $app    Flight engine instance
+	 * @param array       $config Additional configuration options
+	 */
+	public function __construct(Engine $app = null, array $config = []) {
 		if(Debugger::isEnabled() === false) {
 			throw new Exception('You need to enable Tracy\Debugger before using this extension!');
 		}
@@ -23,6 +31,8 @@ class TracyExtensionLoader {
 
 		// This is to make double sure that the errors are handled by Tracy
 		$app->set('flight.handle_errors', false);
+
+		$this->config = $config;
 
 		$this->loadExtensions($app);
 	}

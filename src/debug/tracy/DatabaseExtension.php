@@ -27,6 +27,8 @@ class DatabaseExtension extends ExtensionBase implements \Tracy\IBarPanel {
 					<tr>
 						<th>Time</th>
 						<th>SQL</th>
+						<th>Backtrace</th>
+						<th>Rows</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -36,18 +38,22 @@ EOT;
 			foreach($query_data as $data) {
 				$time		    = round($data['execution_time'] + ($data['prepare_time'] ?? 0), 4);
 				$sql 		    = $this->handleLongStrings(($data['query'] ?? ''));
+				$backtrace      = $this->handleLongStrings(($data['backtrace'] ?? ''));
+				$rows           = $data['rows'] ?? 0;
 				$long_query_row = $time > self::LONG_QUERY_TIME ? ' style="background-color: coral;"' : '';
 				$html          .= <<<EOT
 						<tr{$long_query_row}>
 							<td>{$time}</td>
 							<td>{$sql}</td>
+							<td>{$backtrace}</td>
+							<td>{$rows}</td>
 						</tr>
 						EOT;
 			}
 		} else {
 			$html .= <<<EOT
 						<tr>
-							<td colspan="2">No queries were run or you did not create the PdoQueryCapture Database correctly. Please see the documentation for assistance.</td>
+							<td colspan="4">No queries were run or you did not create the PdoQueryCapture Database correctly. Please see the documentation for assistance.</td>
 						</tr>
 						EOT;
 		}

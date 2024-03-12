@@ -28,15 +28,27 @@ class FlightPanelExtension extends ExtensionBase implements \Tracy\IBarPanel {
 		// get all the vars
 		$flight_var_data = $this->app->get();
 		$current_route = $this->app->router()->current();
-		$methods = implode(', ', $current_route->methods);
-		$params = $current_route->params ? print_r($current_route->params, true) : '';
+		$methods = '';
+		$params = '';
+		$pattern = '';
+		$alias = '';
+		$regex = '';
+		$splat = '';
+		if($current_route) {
+			$methods = implode(', ', $current_route->methods);
+			$params = $current_route->params ? print_r($current_route->params, true) : '';
+			$pattern = $current_route->pattern;
+			$alias = $current_route->alias;
+			$regex = $current_route->regex;
+			$splat = $current_route->splat;
+		}
 		$flight_var_data['Current Route'] = <<<TEXT
-			Pattern: {$current_route->pattern}
+			Pattern: {$pattern}
 			Methods: {$methods}
 			Params:  {$params}
-			Alias:   {$current_route->alias}
-			Regex:   {$current_route->regex}
-			Splat:   {$current_route->splat}
+			Alias:   {$alias}
+			Regex:   {$regex}
+			Splat:   {$splat}
 			TEXT;
 		foreach($flight_var_data as $key => &$data) {
 			if(is_object($data) === true) {

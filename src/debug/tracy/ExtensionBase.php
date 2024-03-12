@@ -31,9 +31,18 @@ abstract class ExtensionBase {
 
 		$value = is_bool($value) || is_int($value) ? var_export($value, true) : (string) $value;
 
+		// This trims all the whitespace so it's easier to read
+		if(strpos($value, "\n") !== false) {
+			$lines = explode("\n", $value);
+			$value = '';
+			foreach($lines as $line) {
+				$value .= trim($line)."\n";
+			}
+		}
+
 		if(strlen($value) > 60) {
 			$uniq_id = uniqid('');
-			$value = $this->ellipsis($value, 60).' <a href="#tracy-request-panel-'.$uniq_id.'" class="tracy-toggle tracy-collapsed">more</a><pre id="tracy-request-panel-'.$uniq_id.'" class="tracy-collapsed" style="max-width: '.$this->value_width.'px; overflow: auto;"><code>'.$value.'</code></pre>';
+			$value = $this->ellipsis($value, 60).' <a href="#tracy-request-panel-'.$uniq_id.'" class="tracy-toggle tracy-collapsed">more</a><pre id="tracy-request-panel-'.$uniq_id.'" class="tracy-collapsed" style="max-width: '.$this->value_width.'px; overflow: auto; min-height: 40px; background-color: #EEE; padding: 5px;"><code>'.$value.'</code></pre>';
 		}
 
 		return $value;
