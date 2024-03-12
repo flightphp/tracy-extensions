@@ -49,6 +49,9 @@ class PdoQueryCapture extends \flight\database\PdoWrapper {
 		self::$query_data[uniqid("", true)] = [
 			'query' => $query,
 			'execution_time' => $execution_time,
+			'params' => [],
+			'backtrace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),
+			'rows' => $result->rowCount()
 		];
 		return $result;
 	}
@@ -68,6 +71,9 @@ class PdoQueryCapture extends \flight\database\PdoWrapper {
 		self::$query_data[uniqid("", true)] = [
 			'query' => $statement,
 			'execution_time' => $execution_time,
+			'params' => [],
+			'backtrace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),
+			'rows' => (int) $result
 		];
 		return $result;
 	}
@@ -89,7 +95,9 @@ class PdoQueryCapture extends \flight\database\PdoWrapper {
 			'query' => $query,
 			'prepare_time' => $execution_time,
 			'execution_time' => 0,
-			'params' => []
+			'params' => [],
+			'backtrace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),
+			'rows' => 0
 		];
 		return $statement;
 	}
