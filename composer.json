@@ -16,5 +16,8 @@
 		"php": ">=7.4",
         "tracy/tracy": "^2.9",
         "flightphp/core": "^3.0"
+    },
+    "require-dev": {
+        "ghostff/session": "^2.1"
     }
 }

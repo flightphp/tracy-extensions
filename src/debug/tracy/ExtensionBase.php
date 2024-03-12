@@ -29,7 +29,7 @@ abstract class ExtensionBase {
 			$value = print_r($value, true);
 		}
 
-		$value = is_bool($value) || is_int($value) ? var_export($value, true) : (string) $value;
+		$value = is_bool($value) || is_int($value) ? var_export($value, true) : htmlspecialchars((string) $value);
 
 		// This trims all the whitespace so it's easier to read
 		if(strpos($value, "\n") !== false) {

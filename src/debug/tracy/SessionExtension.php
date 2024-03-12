@@ -5,13 +5,29 @@ namespace flight\debug\tracy;
 
 class SessionExtension extends ExtensionBase implements \Tracy\IBarPanel {
 
+	protected array $session_data = [];
+
+	/**
+	 * Construct
+	 *
+	 * @param array $session_data the session data
+	 */
+	public function __construct(array $session_data = []) {
+		$this->session_data = $session_data ?: $_SESSION;
+	}
+
 	/**
 	 * Gets the panel
 	 *
 	 * @return string
 	 */
 	public function getPanel() {
-		$session_data  = $_SESSION;
+		$session_data  = $this->session_data;
+
+		// Interesting base that Ghostff/Session uses
+		if(isset($session_data[':'][0])) {
+			$session_data = $session_data[':'][0];
+		}
 		$table_tr_html = '';
 		if(!empty($session_data)){
 			ksort($session_data, SORT_NATURAL);

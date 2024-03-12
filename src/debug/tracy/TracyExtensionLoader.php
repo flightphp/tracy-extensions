@@ -39,16 +39,18 @@ class TracyExtensionLoader {
 
 	protected function loadExtensions(Engine $app): void {
 		Debugger::getBar()->addPanel(new FlightPanelExtension($app));
+		Debugger::getBar()->addPanel(new RequestExtension($app));
+		Debugger::getBar()->addPanel(new ResponseExtension($app));
+
 		if(isset(PdoQueryCapture::$query_data)) {
 			Debugger::getBar()->addPanel(new DatabaseExtension);
 		}
 
 		// if there's no session data, then don't show the panel
-		if(session_status() === PHP_SESSION_ACTIVE) {
-			Debugger::getBar()->addPanel(new SessionExtension);
+		if(session_status() === PHP_SESSION_ACTIVE || !empty($this->config['session_data'])) {
+			$session_data = $this->config['session_data'] ?? $_SESSION;
+			Debugger::getBar()->addPanel(new SessionExtension($session_data));
 		}
-		
-		Debugger::getBar()->addPanel(new RequestExtension($app));
 
 		Debugger::getBlueScreen()->addPanel(function(?Throwable $e) use ($app) {
 			$FlightPanelExtension = new FlightPanelExtension($app);
