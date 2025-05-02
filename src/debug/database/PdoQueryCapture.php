@@ -22,7 +22,7 @@ class PdoQueryCapture extends \flight\database\PdoWrapper {
 	 * @param string|null $password password
 	 * @param array       $options  options
 	 */
-	public function __construct(string $dsn, string $username = null, string $password = null, array $options = []) {
+	public function __construct(string $dsn, ?string $username = null, ?string $password = null, array $options = []) {
 		parent::__construct($dsn, $username, $password, $options);
 		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [PdoQueryCaptureStatement::class, [$this]]);
 	}

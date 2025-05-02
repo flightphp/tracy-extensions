@@ -20,7 +20,7 @@ class TracyExtensionLoader {
 	 * @param Engine|null $app    Flight engine instance
 	 * @param array       $config Additional configuration options
 	 */
-	public function __construct(Engine $app = null, array $config = []) {
+	public function __construct(?Engine $app = null, array $config = []) {
 		if(Debugger::isEnabled() === false) {
 			throw new Exception('You need to enable Tracy\Debugger before using this extension!');
 		}
