@@ -50,7 +50,7 @@ class PdoQueryCaptureStatement extends PDOStatement {
 				$v = "'{$v}'";
 			}
             if($indexed) {
-				$query = preg_replace('/\?/', $v, $query, 1);
+				$query = preg_replace('/\?/', (string) $v, $query, 1);
 			} else {
 				$query = str_replace(":$k", (string) $v, $query);
 			}
