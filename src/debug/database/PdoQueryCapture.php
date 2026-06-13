@@ -6,7 +6,7 @@ namespace flight\debug\database;
 use PDO;
 use PDOStatement;
 
-class PdoQueryCapture extends \flight\database\PdoWrapper {
+class PdoQueryCapture extends \flight\database\SimplePdo {
 
 	/** @var array $query_data */
 	public static array $query_data = [];
@@ -17,13 +17,34 @@ class PdoQueryCapture extends \flight\database\PdoWrapper {
 	/**
 	 * Construct
 	 *
+	 * Supports the legacy signature for BC as well as SimplePdo style:
+	 *   new PdoQueryCapture($dsn, $user, $pass)
+	 *   new PdoQueryCapture($dsn, $user, $pass, $pdoOptions, $trackApmQueriesBool)
+	 *   new PdoQueryCapture($dsn, $user, $pass, $pdoOptions, $optionsArray)
+	 *
 	 * @param string      $dsn      dsn
 	 * @param string|null $username username
 	 * @param string|null $password password
-	 * @param array       $options  options
+	 * @param array|null  $arg4     pdo options array or legacy track bool position
+	 * @param array|bool  $arg5     options array (with trackApmQueries) or legacy bool
 	 */
-	public function __construct(string $dsn, ?string $username = null, ?string $password = null, array $options = [], bool $trackApmQueries = false) {
-		parent::__construct($dsn, $username, $password, $options, $trackApmQueries);
+	public function __construct($dsn, $username = null, $password = null, $arg4 = null, $arg5 = null) {
+		$pdoOptions = null;
+		$options = [];
+
+		if (is_array($arg4)) {
+			$pdoOptions = $arg4;
+		}
+		if (is_bool($arg5)) {
+			$options = ['trackApmQueries' => $arg5];
+		} elseif (is_array($arg5)) {
+			$options = $arg5;
+		} elseif (is_bool($arg4)) {
+			// very legacy? treat 4th bool as trackApm (unlikely)
+			$options = ['trackApmQueries' => $arg4];
+		}
+
+		parent::__construct($dsn, $username, $password, $pdoOptions, $options);
 		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [PdoQueryCaptureStatement::class, [$this]]);
 	}
 

@@ -35,6 +35,7 @@ class PdoQueryCaptureStatement extends PDOStatement {
 		$end_time = microtime(true);
 		$execution_time = $end_time - $start_time;
 		$params = $params ?? (PdoQueryCapture::$query_data[$this->unique_value]['params'] ?? []);
+		PdoQueryCapture::$query_data[$this->unique_value]['params'] = $params;
 		PdoQueryCapture::$query_data[$this->unique_value]['execution_time'] = $execution_time;
 		PdoQueryCapture::$query_data[$this->unique_value]['rows'] = $this->rowCount();
 		$this->transformQueryWithParams($params);
