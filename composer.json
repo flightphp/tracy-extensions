@@ -18,6 +18,10 @@
         "flightphp/core": "^3.18.0"
     },
     "require-dev": {
-        "ghostff/session": "^2.1"
+        "ghostff/session": "^2.1",
+        "phpunit/phpunit": "^9.6"
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }
