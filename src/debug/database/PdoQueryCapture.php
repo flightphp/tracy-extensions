@@ -6,7 +6,7 @@ namespace flight\debug\database;
 use PDO;
 use PDOStatement;
 
-class PdoQueryCapture extends \flight\database\PdoWrapper {
+class PdoQueryCapture extends \flight\database\SimplePdo {
 
 	/** @var array $query_data */
 	public static array $query_data = [];
@@ -17,13 +17,17 @@ class PdoQueryCapture extends \flight\database\PdoWrapper {
 	/**
 	 * Construct
 	 *
+	 * Supports the legacy signature for BC as well as SimplePdo style.
+	 *
 	 * @param string      $dsn      dsn
 	 * @param string|null $username username
 	 * @param string|null $password password
-	 * @param array       $options  options
+	 * @param array       $options  pdo options (or options array for SimplePdo)
 	 */
 	public function __construct(string $dsn, string $username = null, string $password = null, array $options = []) {
-		parent::__construct($dsn, $username, $password, $options);
+		// Map to SimplePdo constructor: 4th arg = pdoOptions, 5th = options array
+		// On this branch we keep the existing 4-param signature for maximum BC.
+		parent::__construct($dsn, $username, $password, $options, []);
 		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [PdoQueryCaptureStatement::class, [$this]]);
 	}
 
