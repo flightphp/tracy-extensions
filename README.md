@@ -40,11 +40,16 @@ Debugger::enable();
 
 // if you use database connections in your app, there is a 
 // required PDO wrapper to use ONLY IN DEVELOPMENT (not production please!)
-// It has the same parameters as a regular PDO connection
+// PdoQueryCapture extends Flight's SimplePdo (recommended) so you get all the
+// helper methods (fetchAll, insert, update, etc) + automatic query capture for Tracy.
+// It has a constructor compatible with PDO/SimplePdo.
 $pdo = new PdoQueryCapture('sqlite:test.db', 'user', 'pass');
 // or if you attach this to the Flight framework
 Flight::register('db', PdoQueryCapture::class, ['sqlite:test.db', 'user', 'pass']);
-// now whenever you make a query it will capture the time, query, and parameters
+// now whenever you make a query (via any method) it will capture the time, query, and parameters
+
+// For full APM query tracking (beyond Tracy), install flightphp/apm and use:
+// $db->logQueries() or enable via options; it fires the 'flight.db.queries' event.
 
 // This connects the dots
 if(Debugger::$showBar === true) {
