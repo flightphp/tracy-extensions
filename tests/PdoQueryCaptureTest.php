@@ -201,4 +201,67 @@ class PdoQueryCaptureTest extends TestCase
 
         $this->assertGreaterThanOrEqual(2, count(PdoQueryCapture::$query_data));
     }
+
+    public function testConstructorSupportsAllLegacyArgumentSignatures(): void
+    {
+        // Cover the various if/elseif branches for $arg4 / $arg5 (pdoOptions + trackApm / options)
+        $db1 = new PdoQueryCapture('sqlite::memory:', null, null, ['ATTR_DEFAULT_FETCH_MODE' => \PDO::FETCH_ASSOC]);
+        $this->assertInstanceOf(PdoQueryCapture::class, $db1);
+
+        $db2 = new PdoQueryCapture('sqlite::memory:', null, null, null, true);
+        $this->assertInstanceOf(PdoQueryCapture::class, $db2);
+
+        $db3 = new PdoQueryCapture('sqlite::memory:', null, null, null, ['trackApmQueries' => false]);
+        $this->assertInstanceOf(PdoQueryCapture::class, $db3);
+
+        $db4 = new PdoQueryCapture('sqlite::memory:', null, null, true); // very legacy bool as arg4
+        $this->assertInstanceOf(PdoQueryCapture::class, $db4);
+
+        // Also mixed real usage
+        $db5 = new PdoQueryCapture('sqlite::memory:', null, null, [], ['foo' => 'bar']);
+        $this->assertInstanceOf(PdoQueryCapture::class, $db5);
+    }
+
+    public function testPrepareExecuteWithNamedParametersHitsTransformNamedBranch(): void
+    {
+        $db = new PdoQueryCapture('sqlite::memory:');
+        $db->exec('CREATE TABLE t (id INTEGER PRIMARY KEY, name TEXT)');
+        $db->exec("INSERT INTO t (name) VALUES ('test')");
+
+        $stmt = $db->prepare('SELECT * FROM t WHERE name = :name');
+        $stmt->execute(['name' => 'test']);
+
+        $data = array_values(PdoQueryCapture::$query_data);
+        $last = end($data);
+
+        // The transform should have replaced :name with the quoted value in the stored query for display
+        $this->assertStringContainsString("'test'", $last['query'] ?? '');
+    }
+
+    public function testBindColumnBindParamBindValueAreRecorded(): void
+    {
+        $db = new PdoQueryCapture('sqlite::memory:');
+        $db->exec('CREATE TABLE t (id INT, label TEXT)');
+        $db->exec("INSERT INTO t (id, label) VALUES (42, 'hello')");
+
+        $stmt = $db->prepare('SELECT id, label FROM t WHERE id = ?');
+        $idParam = 42;
+        $stmt->bindValue(1, $idParam);
+        $stmt->bindParam(1, $idParam);
+        $labelCol = '';
+        $stmt->bindColumn(2, $labelCol);
+
+        $stmt->execute();
+
+        // After execute, the query_data entry for the prepare should have params recorded by the bind calls
+        $found = false;
+        foreach (PdoQueryCapture::$query_data as $entry) {
+            if (isset($entry['query']) && str_contains($entry['query'], 'SELECT id, label')) {
+                $found = true;
+                // bindValue / bindParam should have populated params
+                $this->assertNotEmpty($entry['params'] ?? []);
+            }
+        }
+        $this->assertTrue($found, 'Prepared query entry with binds should have been captured');
+    }
 }

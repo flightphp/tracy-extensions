@@ -19,9 +19,21 @@
     },
     "require-dev": {
         "ghostff/session": "^2.1",
-        "phpunit/phpunit": "^9.6"
+        "phpunit/phpunit": "^9.6",
+        "rregeer/phpunit-coverage-check": "^0.3.1"
     },
     "scripts": {
-        "test": "phpunit"
+        "test": "phpunit",
+        "test-coverage": [
+            "rm -f clover.xml",
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --coverage-html=coverage --coverage-clover=clover.xml --coverage-text",
+            "coverage-check clover.xml 100"
+        ],
+        "test-coverage:win": [
+            "del clover.xml",
+            "phpunit --coverage-html=coverage --coverage-clover=clover.xml --coverage-text",
+            "coverage-check clover.xml 100"
+        ]
     }
 }
