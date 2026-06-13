@@ -7,6 +7,11 @@
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
          verbose="true">
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">src/</directory>
+        </include>
+    </coverage>
     <testsuites>
         <testsuite name="default">
             <directory>tests</directory>

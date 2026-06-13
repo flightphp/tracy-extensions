@@ -1,2 +1,5 @@
 vendor/
 .vscode/.phpunit.cache
+coverage/
+clover.xml
+.phpunit.cache/
